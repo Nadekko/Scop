@@ -4,7 +4,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++11
 GLADFLAGS = -I glad/include
 OPENGLFLAGS = -lGL -lglfw
 NAME = scop
-SRC = src/main.cpp
+SRC = src/main.cpp src/shader.cpp
 GLAD_SRC = glad/src/glad.c
 GLAD_OBJ = glad/src/glad.o
 OBJ = $(SRC:.cpp=.o)
