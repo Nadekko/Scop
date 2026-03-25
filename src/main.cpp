@@ -37,7 +37,7 @@ int main(void)
     GLFWwindow *window = glfwCreateWindow(800, 600, "SCOP", NULL, NULL);
     if (!window)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        std::cerr << "ERROR::WINDOW::FAILED_TO_CREATE" << std::endl;
         glfwTerminate();
         return (-1);
     }
@@ -46,7 +46,7 @@ int main(void)
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) // initialize GLAD to load the OpenGL function pointers
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        std::cerr << "ERROR::GLAD::FAILED_TO_INITIALIZE" << std::endl;
         return (-1);
     }
 
