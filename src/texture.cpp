@@ -1,5 +1,11 @@
 #include "../include/texture.hpp"
 
+// commande image :
+// convert image.png -type TrueColor image.bmp <= command ImageMagick (in true color format (24 bits per pixel)
+// xxd image.bmp <= this command will output the binary content of the BMP file in a hexadecimal format
+// file image.bmp <= this command will output the file type of the image
+
+
 // a BPM file is a bitmap image file format used to store digital images.
 // It is a simple format that stores pixel data in a binary format, along with a header that contains information about the image such as its width, height, and color depth.
 // The header is typically 54 bytes long and contains information such as the file type, file size, image width, image height, number of color planes, bits per pixel, compression method, and more.
