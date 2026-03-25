@@ -1,6 +1,6 @@
 #include "../include/shader.hpp"
 
-Shader::Shader (const GLchar *vertexPath, const char *fragmentPath)
+Shader::Shader (const GLchar* vertexPath, const GLchar* fragmentPath)
 {
     // 1. retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
@@ -101,6 +101,10 @@ void Shader::setFloat(const std::string &name, float value) const
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
+Shader::~Shader()
+{
+    glDeleteProgram(ID);
+}
 
 void Shader::checkCompileErrors(unsigned int shader, std::string type)
 {
