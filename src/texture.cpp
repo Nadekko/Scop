@@ -1,10 +1,12 @@
 #include "../include/texture.hpp"
+
 // a BPM file is a bitmap image file format used to store digital images.
 // It is a simple format that stores pixel data in a binary format, along with a header that contains information about the image such as its width, height, and color depth.
 // The header is typically 54 bytes long and contains information such as the file type, file size, image width, image height, number of color planes, bits per pixel, compression method, and more.
 // The pixel data follows the header and is stored in a specific order based on the color depth of the image (e.g., RGB or RGBA). 
 // BMP files can be uncompressed or compressed using various methods, 
 // but they are generally larger in size compared to other image formats like JPEG or PNG due to their simplicity and lack of compression.
+
 // Visualizing the structure of a BMP file
 //  +----------------------+
 //  octet 0 1 : 'B''M' (signature)
@@ -103,6 +105,7 @@ Texture::Texture(const char *path)
     // generate mipmaps
     glGenerateMipmap(GL_TEXTURE_2D);
     delete[] data;
+
 }
 
 Texture::~Texture()
