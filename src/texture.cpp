@@ -49,7 +49,7 @@ Texture::Texture(const char *path)
     }
 
     int dataOffset = *(int *)&(header[10]);
-    if (dataOffset != 54)
+    if (dataOffset < 54)
     {
         std::cerr << "ERROR::TEXTURE::UNSUPPORTED_BMP_FORMAT\n" << path << std::endl;
         fclose(file);
@@ -66,7 +66,7 @@ Texture::Texture(const char *path)
     }
 
     int bpp = *(short *)&(header[28]); // BMP files store colors in BGR (blue-green-red) format, so we need to convert it to RGB
-    if (bpp != 24)
+    if (bpp != 24 && bpp != 32)
     {
         std::cerr << "ERROR::TEXTURE::UNSUPPORTED_BMP_FORMAT\n" << path << std::endl;
         fclose(file);
@@ -74,7 +74,8 @@ Texture::Texture(const char *path)
     }
 
     //calculate the size of the pixel data
-    int imageSize = width * height * 3; // 3 bytes per pixel for RGB
+    unsigned int rowSize = ((bpp * width + 31) / 32) * 4; // each row is padded to be a multiple of 4 bytes
+    unsigned int imageSize = rowSize * height; // total size of pixel data
     unsigned char *data = new unsigned char[imageSize];
     // pos at the beginning of the pixel data
     fseek(file, dataOffset, SEEK_SET);
@@ -101,7 +102,11 @@ Texture::Texture(const char *path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // texture magnifying (object is close)
 
     // upload the texture data to the GPU
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    if (bpp == 24)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+    else if (bpp == 32)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
     // generate mipmaps
     glGenerateMipmap(GL_TEXTURE_2D);
     delete[] data;

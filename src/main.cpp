@@ -3,6 +3,7 @@
 #include <iostream>
 #include <math.h>
 #include "../include/shader.hpp"
+#include "../include/texture.hpp"
 
 // VAO = vertex array object
 // VBO = vertex buffer object
@@ -51,13 +52,20 @@ int main(void)
     }
 
     Shader ourShader("shader/vertex/3.3.shader.vs", "shader/fragment/3.3.shader.fs");
+    Texture ourTexture("texture/cat_gray.bmp");
 
     // CHECK COORD's AND COLORS OF THE VERTICES
+    // float vertices[] = {
+    //     // coord           // color         
+    //     0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+    //     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+    //     0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+    // };
     float vertices[] = {
-        // coord         // color             //tex coords
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 
+        // position          // UV
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  // bottom left
+        0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  // bottom right
+        0.0f,  0.5f, 0.0f,  0.5f, 1.0f   // top center
     };
 
     unsigned int VBO, VAO;
@@ -71,14 +79,18 @@ int main(void)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    // position attribute 
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    // glEnableVertexAttribArray(1);
+
+    // texture attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    
+
     // RENDER LOOP
     while (!glfwWindowShouldClose(window))
     {
@@ -100,6 +112,10 @@ int main(void)
         // }
         // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
         ourShader.use();
+        ourShader.setInt("ourTexture", 0); // set the texture uniform to use texture unit 0
+        glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
+        ourTexture.bind();
+        
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
