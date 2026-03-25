@@ -9,7 +9,7 @@
 // VBO = vertex buffer object
 // EBO = element buffer object
 
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow *window, float &mixValue, bool &textureMode)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -17,6 +17,22 @@ void processInput(GLFWwindow *window)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    
+    static bool tWasPressed = false;
+    bool tIsPressed = glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS;
+    if (tIsPressed && !tWasPressed)
+        textureMode = !textureMode; // toggle
+    tWasPressed = tIsPressed;
+
+    // transition
+    if (textureMode && mixValue < 1.0f)
+        mixValue += 0.01f;
+    else if (!textureMode && mixValue > 0.0f)
+        mixValue -= 0.01f;
+    if (mixValue < 0.0f)
+        mixValue = 0.0f;
+    else if (mixValue > 1.0f)
+        mixValue = 1.0f;
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
@@ -55,17 +71,11 @@ int main(void)
     Texture ourTexture("texture/cat_gray.bmp");
 
     // CHECK COORD's AND COLORS OF THE VERTICES
-    // float vertices[] = {
-    //     // coord           // color         
-    //     0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-    //     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-    //     0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-    // };
     float vertices[] = {
-        // position          // UV
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  // bottom left
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  // bottom right
-        0.0f,  0.5f, 0.0f,  0.5f, 1.0f   // top center
+        // position          // color           // UV
+        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // bottom left
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.5f, 1.0f// top center
     };
 
     unsigned int VBO, VAO;
@@ -79,40 +89,37 @@ int main(void)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // [x][y][z] | [r][g][b] | [u][v]
+    // location 0| location 1| location 2
+    // offset 0  | offset 3  | offset 6
     // position attribute 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // color attribute
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    // glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // texture attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    float mixValue = 0.0f;
+    bool textureMode = false;
 
     // RENDER LOOP
     while (!glfwWindowShouldClose(window))
     {
         // input
-        processInput(window);
+        processInput(window, mixValue, textureMode);
         
         // render
         glClearColor(0.7, 0.6, 0.9, 1.0); // set the clear color
         glClear(GL_COLOR_BUFFER_BIT); // clear the color buffer
 
-        // // no more uniform color,
-        // // setting the uniform color to change over time
-        // float timeValue = glfwGetTime(); // get current time in seconds since GLFW was initialized
-        // float greenValue = (sin(timeValue) / 2.0f + 0.5f);
-        // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        // if (vertexColorLocation == -1)
-        // {
-        //     std::cout << "Could not find uniform variable 'ourColor' in shader program" << std::endl;
-        // }
-        // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
         ourShader.use();
         ourShader.setInt("ourTexture", 0); // set the texture uniform to use texture unit 0
+        ourShader.setFloat("mixValue", mixValue); // set the mix value uniform to 0.5 for blending
         glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
         ourTexture.bind();
         
