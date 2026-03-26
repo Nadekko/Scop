@@ -108,13 +108,16 @@ Texture::Texture(const char *path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // texture magnifying (object is close)
 
     // upload the texture data to the GPU
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    if (bpp == 24)
+    if (data)
+    {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-    else if (bpp == 32)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cerr << "ERROR::TEXTURE::FAILED_TO_LOAD\n" << path << std::endl;
+    }
     // generate mipmaps
-    glGenerateMipmap(GL_TEXTURE_2D);
     delete[] data;
 
 }
