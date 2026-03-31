@@ -54,25 +54,17 @@ Texture::Texture(const char *path)
         return;
     }
 
-    int dataOffset = *(int *)&(header[10]);
-    if (dataOffset < 54)
-    {
-        std::cerr << "ERROR::TEXTURE::UNSUPPORTED_BMP_FORMAT\n" << path << std::endl;
-        fclose(file);
-        return;
-    }
+    int dataOffset;
+    std::memcpy(&dataOffset, &header[10], sizeof(int));
+    
+    int width, height;
+    std::memcpy(&width, &header[18], sizeof(int));
+    std::memcpy(&height, &header[22], sizeof(int));
+    
+    short bpp;  // BMP files store colors in BGR (blue-green-red) format, so we need to convert it to RGB
+    std::memcpy(&bpp, &header[28], sizeof(short));
 
-    int width = *(int *)&(header[18]);
-    int height = *(int *)&(header[22]);
-    if (width <= 0 || height <= 0)
-    {
-        std::cerr << "ERROR::TEXTURE::INVALID_IMAGE_DIMENSIONS\n" << path << std::endl;
-        fclose(file);
-        return;
-    }
-
-    int bpp = *(short *)&(header[28]); // BMP files store colors in BGR (blue-green-red) format, so we need to convert it to RGB
-    if (bpp != 24 && bpp != 32)
+    if (dataOffset < 54 || (bpp != 24 && bpp != 32) || (width <= 0 || height <= 0))
     {
         std::cerr << "ERROR::TEXTURE::UNSUPPORTED_BMP_FORMAT\n" << path << std::endl;
         fclose(file);
@@ -82,13 +74,14 @@ Texture::Texture(const char *path)
     //calculate the size of the pixel data
     unsigned int rowSize = ((bpp * width + 31) / 32) * 4; // each row is padded to be a multiple of 4 bytes
     unsigned int imageSize = rowSize * height; // total size of pixel data
-    unsigned char *data = new unsigned char[imageSize];
+    std::vector<unsigned char> data(imageSize); // allocate memory for pixel data
+
     // pos at the beginning of the pixel data
     fseek(file, dataOffset, SEEK_SET);
-    if (fread(data, 1, imageSize, file) != imageSize)
+    if (fread(data.data(), 1, imageSize, file) != imageSize)
     {
         std::cerr << "ERROR::TEXTURE::FILE_NOT_SUCCESFULLY_READ\n" << path << std::endl;
-        delete[] data;
+        data.clear();
         fclose(file);
         return;
     }
@@ -97,7 +90,6 @@ Texture::Texture(const char *path)
     // generate and bind the texture
     glGenTextures(1, &ID);
     glBindTexture(GL_TEXTURE_2D, ID);
-
     // set the texture wrapping parameters
     // s = horizontal axis, t = vertical axis
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -107,19 +99,14 @@ Texture::Texture(const char *path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // texture minifying (object is far away)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // texture magnifying (object is close)
 
+    GLenum format = (bpp == 24) ? GL_BGR : GL_BGRA; // BMP files store colors in BGR format, so we need to convert it to RGB
+    GLenum internalFormat = (bpp == 24) ? GL_RGB : GL_RGBA; // we want to store the texture in RGB or RGBA format on the GPU
+    
     // upload the texture data to the GPU
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cerr << "ERROR::TEXTURE::FAILED_TO_LOAD\n" << path << std::endl;
-    }
-    // generate mipmaps
-    delete[] data;
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data.data());
 
+    glGenerateMipmap(GL_TEXTURE_2D);
+    data.clear();
 }
 
 Texture::~Texture()

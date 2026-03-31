@@ -1,6 +1,6 @@
 CXX = c++
 CC = cc
-CXXFLAGS = -Wall -Wextra -Werror -std=c++11
+CXXFLAGS = -Wall -Wextra -Werror -std=c++11 -g
 GLADFLAGS = -I glad/include
 OPENGLFLAGS = -lGL -lglfw
 NAME = scop

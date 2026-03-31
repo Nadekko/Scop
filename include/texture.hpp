@@ -3,6 +3,9 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
+#include <cstring>
+
 #include <glad/glad.h>
 
 class Texture
