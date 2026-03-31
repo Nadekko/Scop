@@ -4,6 +4,7 @@
 #include <math.h>
 #include "../include/shader.hpp"
 #include "../include/texture.hpp"
+#include "../include/mesh.hpp"
 
 // VAO = vertex array object
 // VBO = vertex buffer object
@@ -70,40 +71,41 @@ int main(void)
     {
         Shader ourShader("shader/vertex/3.3.shader.vs", "shader/fragment/3.3.shader.fs");
         Texture ourTexture("texture/cat_gray.bmp");
+        Mesh ourMesh("resources/42.obj");
 
-        // CHECK COORD's AND COLORS OF THE VERTICES
-        float vertices[] = {
-            // position          // color           // UV
-            0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // bottom left
-            -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-            0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.5f, 1.0f// top center
-        };
+        // // CHECK COORD's AND COLORS OF THE VERTICES
+        // float vertices[] = {
+        //     // position          // color           // UV
+        //     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // bottom left
+        //     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        //     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.5f, 1.0f// top center
+        // };
 
-        unsigned int VBO, VAO;
+        // unsigned int VBO, VAO;
         
-        glGenBuffers(1, &VBO);
-        glGenVertexArrays(1, &VAO);
+        // glGenBuffers(1, &VBO);
+        // glGenVertexArrays(1, &VAO);
 
-        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glBindVertexArray(VAO);
+        // // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+        // glBindVertexArray(VAO);
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-        // [x][y][z] | [r][g][b] | [u][v]
-        // location 0| location 1| location 2
-        // offset 0  | offset 3  | offset 6
-        // position attribute 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
+        // // [x][y][z] | [r][g][b] | [u][v]
+        // // location 0| location 1| location 2
+        // // offset 0  | offset 3  | offset 6
+        // // position attribute 
+        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        // glEnableVertexAttribArray(0);
 
-        // color attribute
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
+        // // color attribute
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        // glEnableVertexAttribArray(1);
 
-        // texture attribute
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);
+        // // texture attribute
+        // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        // glEnableVertexAttribArray(2);
 
         float mixValue = 0.0f;
         bool textureMode = false;
@@ -124,16 +126,17 @@ int main(void)
             glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
             ourTexture.bind();
             
-            glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            ourMesh.draw();
+            // glBindVertexArray(VAO);
+            // glDrawArrays(GL_TRIANGLES, 0, 3);
 
             // check and call events and swap the buffers
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
         
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &VBO);
+        // glDeleteVertexArrays(1, &VAO);
+        // glDeleteBuffers(1, &VBO);
     }
     
     glfwTerminate();

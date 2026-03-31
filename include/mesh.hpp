@@ -1,17 +1,20 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
+#include <glad/glad.h>
+
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 
-struct Vertex
-{
-    float position[3]; // v maybe [4] ?
-    float texCoords[2]; // vt
-    float normale[3]; // vn
-};
+// struct Vertex
+// {
+//     float position[3]; // v
+//     float texCoords[2]; // vt :: UV
+//     float normale[3]; // vn
+// };
 
 class Mesh
 {
@@ -24,8 +27,8 @@ class Mesh
 
     private:
         // CPU
-        std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices; // f
+        std::vector<float> vertices; // v
+        std::vector<unsigned int> faces; // f
 
         // GPU
         unsigned int VAO, VBO, EBO;
