@@ -73,6 +73,38 @@ int main(void)
         Texture ourTexture("texture/cat_gray.bmp");
         Mesh ourMesh("resources/42.obj");
 
+        float mixValue = 0.0f;
+        bool textureMode = false;
+
+        // RENDER LOOP
+        while (!glfwWindowShouldClose(window))
+        {
+            // input
+            processInput(window, mixValue, textureMode);
+            
+            // render
+            glClearColor(0.7, 0.6, 0.9, 1.0); // set the clear color
+            glClear(GL_COLOR_BUFFER_BIT); // clear the color buffer
+
+            ourShader.use();
+            ourShader.setInt("ourTexture", 0); // set the texture uniform to use texture unit 0
+            ourShader.setFloat("mixValue", mixValue); // set the mix value uniform to 0.5 for blending
+            glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
+            ourTexture.bind();
+            
+            ourMesh.draw();
+
+            // check and call events and swap the buffers
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
+    }
+    
+    glfwTerminate();
+    return (0);
+}
+
+
         // // CHECK COORD's AND COLORS OF THE VERTICES
         // float vertices[] = {
         //     // position          // color           // UV
@@ -106,39 +138,3 @@ int main(void)
         // // texture attribute
         // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         // glEnableVertexAttribArray(2);
-
-        float mixValue = 0.0f;
-        bool textureMode = false;
-
-        // RENDER LOOP
-        while (!glfwWindowShouldClose(window))
-        {
-            // input
-            processInput(window, mixValue, textureMode);
-            
-            // render
-            glClearColor(0.7, 0.6, 0.9, 1.0); // set the clear color
-            glClear(GL_COLOR_BUFFER_BIT); // clear the color buffer
-
-            ourShader.use();
-            ourShader.setInt("ourTexture", 0); // set the texture uniform to use texture unit 0
-            ourShader.setFloat("mixValue", mixValue); // set the mix value uniform to 0.5 for blending
-            glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
-            ourTexture.bind();
-            
-            ourMesh.draw();
-            // glBindVertexArray(VAO);
-            // glDrawArrays(GL_TRIANGLES, 0, 3);
-
-            // check and call events and swap the buffers
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-        }
-        
-        // glDeleteVertexArrays(1, &VAO);
-        // glDeleteBuffers(1, &VBO);
-    }
-    
-    glfwTerminate();
-    return (0);
-}
