@@ -5,6 +5,7 @@
 #include "../include/shader.hpp"
 #include "../include/texture.hpp"
 #include "../include/mesh.hpp"
+#include "../include/mat4.hpp"
 
 // VAO = vertex array object
 // VBO = vertex buffer object
@@ -67,7 +68,7 @@ int main(void)
         std::cerr << "ERROR::GLAD::FAILED_TO_INITIALIZE" << std::endl;
         return (-1);
     }
-
+    glEnable(GL_DEPTH_TEST);
     {
         Shader ourShader("shader/vertex/3.3.shader.vs", "shader/fragment/3.3.shader.fs");
         Texture ourTexture("texture/cat_gray.bmp");
@@ -76,6 +77,9 @@ int main(void)
         float mixValue = 0.0f;
         bool textureMode = false;
 
+        Mat4 projection = Mat4::perspective(45.0f * M_PI / 180.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+        Mat4 view       = Mat4::translation(0.0f, 0.0f, -3.0f);
+        
         // RENDER LOOP
         while (!glfwWindowShouldClose(window))
         {
@@ -84,22 +88,29 @@ int main(void)
             
             // render
             glClearColor(0.7, 0.6, 0.9, 1.0); // set the clear color
-            glClear(GL_COLOR_BUFFER_BIT); // clear the color buffer
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the color buffer
+
+            float angle = glfwGetTime();
+            Mat4 model = Mat4::rotation_y(angle);
 
             ourShader.use();
+            
+            glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "model"),      1, GL_FALSE, model.m);
+            glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"),       1, GL_FALSE, view.m);
+            glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "projection"), 1, GL_FALSE, projection.m);
+            
             ourShader.setInt("ourTexture", 0); // set the texture uniform to use texture unit 0
             ourShader.setFloat("mixValue", mixValue); // set the mix value uniform to 0.5 for blending
+            
             glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
             ourTexture.bind();
-            
             ourMesh.draw();
-
+            
             // check and call events and swap the buffers
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }
-    
     glfwTerminate();
     return (0);
 }

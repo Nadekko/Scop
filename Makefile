@@ -1,11 +1,19 @@
 CXX = c++
 CC = cc
 CXXFLAGS = -Wall -Wextra -Werror -std=c++11 -g
+
 GLADFLAGS = -I glad/include
 OPENGLFLAGS = -lGL -lglfw
+
 NAME = scop
-SRC = src/main.cpp src/shader.cpp src/texture.cpp src/mesh.cpp
+
+SRC_DIRS = \
+		src \
+		src/math \
+
+SRC = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
 GLAD_SRC = glad/src/glad.c
+
 GLAD_OBJ = glad/src/glad.o
 OBJ = $(SRC:.cpp=.o)
 
