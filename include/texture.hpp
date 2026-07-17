@@ -1,12 +1,6 @@
-#ifndef TEXTURE_HPP
-#define TEXTURE_HPP
+#pragma once
 
-#include <string>
-#include <iostream>
-#include <vector>
-#include <cstring>
-
-#include <glad/glad.h>
+#include "config.hpp"
 
 class Texture
 {
@@ -19,5 +13,3 @@ class Texture
         void bind() const;
         void unbind() const ;
 };
-
-#endif

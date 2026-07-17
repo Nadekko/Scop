@@ -1,12 +1,6 @@
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#pragma once
 
-#include <glad/glad.h>
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#include "config.hpp"
 
 class Shader
 {
@@ -26,6 +20,3 @@ class Shader
     private:
         void checkCompileErrors(unsigned int shader, std::string type);
 };
-
-
-#endif // SHADER_HPP

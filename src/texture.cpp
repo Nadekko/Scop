@@ -1,4 +1,4 @@
-#include "../include/texture.hpp"
+#include "../include/config.hpp"
 
 // commande image :
 // convert image.png -type TrueColor image.bmp <= command ImageMagick (in true color format (24 bits per pixel)

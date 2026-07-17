@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cmath>
+#include "config.hpp"
 
 class Vec3
 {

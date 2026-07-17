@@ -1,13 +1,6 @@
-#ifndef MESH_HPP
-#define MESH_HPP
+#pragma once
 
-#include <glad/glad.h>
-
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
+#include "config.hpp"
 
 // struct Vertex
 // {
@@ -20,7 +13,7 @@ class Mesh
 {
     public:
 
-        Mesh(const std::string &path);
+        Mesh(const std::string &objPath);
         ~Mesh();
 
         void draw() const; 
@@ -36,5 +29,3 @@ class Mesh
         void loadMesh(const std::string &path);
         void setupMesh();
 };
-
-#endif // MESH_HPP

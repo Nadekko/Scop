@@ -1,4 +1,4 @@
-#include "../../include/vec3.hpp"
+#include "../../include/config.hpp"
 
 Vec3::Vec3() {}
 

@@ -1,5 +1,4 @@
-#include "../../include/mat4.hpp"
-
+#include "../../include/config.hpp"
 
 Mat4::Mat4()
 {
@@ -169,7 +168,7 @@ Mat4 Mat4::perspective(float fov, float aspect, float near, float far)
     P.m[5] = f;
     P.m[10] = far / (near - far);
     P.m[11] = -1.0f;
-    P.m[14] = (near * far) / (near - far);
+    P.m[14] = (2.0f * near * far) / (near - far);
 
     return (P);
 }
