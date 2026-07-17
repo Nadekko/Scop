@@ -17,3 +17,4 @@
 #include "texture.hpp"
 #include "mesh.hpp"
 #include "mat4.hpp"
+#include "vec3.hpp"

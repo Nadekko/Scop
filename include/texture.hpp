@@ -10,6 +10,7 @@ class Texture
         Texture(const char *path);
         ~Texture();
 
-        void bind() const;
-        void unbind() const ;
+        int     parseTexturePath(const char *path);
+        void    bind() const;
+        void    unbind() const ;
 };

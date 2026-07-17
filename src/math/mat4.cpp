@@ -14,7 +14,6 @@ Mat4::Mat4(const Mat4 &other)
     }
 }
 
-
 Mat4 Mat4::operator*(const Mat4 &other)
 {
     Mat4 mut;

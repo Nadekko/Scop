@@ -31,13 +31,15 @@
 //  octet 46-49 : number of colors in the color palette (0 for default)
 //  octet 50-53 : number of important colors (0 for all colors)
 
-Texture::Texture(const char *path)
+
+int Texture::parseTexturePath(const char *path)
 {
+    std::cout << "path for texture = " << path << std::endl;
     FILE *file = fopen(path, "rb");
     if (!file)
     {
         std::cerr << "ERROR::TEXTURE::FILE_NOT_SUCCESFULLY_READ\n" << path << std::endl;
-        return;
+        return -1;
     }
 
     unsigned char header[54];
@@ -45,13 +47,13 @@ Texture::Texture(const char *path)
     {
         std::cerr << "ERROR::TEXTURE::FILE_NOT_A_BMP\n" << path << std::endl;
         fclose(file);
-        return;
+        return -1;
     }
     if (header[0] != 'B' || header[1] != 'M')
     {
         std::cerr << "ERROR::TEXTURE::FILE_NOT_A_BMP\n" << path << std::endl;
         fclose(file);
-        return;
+        return -1;
     }
 
     int dataOffset;
@@ -68,7 +70,7 @@ Texture::Texture(const char *path)
     {
         std::cerr << "ERROR::TEXTURE::UNSUPPORTED_BMP_FORMAT\n" << path << std::endl;
         fclose(file);
-        return;
+        return -1;
     }
 
     //calculate the size of the pixel data
@@ -83,10 +85,14 @@ Texture::Texture(const char *path)
         std::cerr << "ERROR::TEXTURE::FILE_NOT_SUCCESFULLY_READ\n" << path << std::endl;
         data.clear();
         fclose(file);
-        return;
+        return -1;
     }
     fclose(file);
+    return 0;
+}
 
+Texture::Texture(const char *path)
+{
     // generate and bind the texture
     glGenTextures(1, &ID);
     glBindTexture(GL_TEXTURE_2D, ID);
