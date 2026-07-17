@@ -15,7 +15,7 @@ class Mat4
         
         Mat4 &operator=(const Mat4 &other);
         Mat4 &operator*=(const Mat4 &other);
-        Mat4 operator*(const Mat4 &other);
+        Mat4 operator*(const Mat4 &other) const;
 
         static Mat4 identity();
         static Mat4 rotation_x(float angle);
@@ -25,8 +25,6 @@ class Mat4
         static Mat4 translation(float x, float y, float z);
         static Mat4 perspective(float fov, float aspect, float near, float far);
 
-        float const& operator()(float x, float y) const;
-        float& operator()(float x, float y);
-
-
+        // float const& operator()(float x, float y) const;
+        // float& operator()(float x, float y);
 };

@@ -9,6 +9,8 @@
 //     float normale[3]; // vn
 // };
 
+class Vec3;
+
 class Mesh
 {
     public:
@@ -20,7 +22,8 @@ class Mesh
 
     private:
         // CPU
-        std::vector<float> vertices; // v
+        std::vector<Vec3> position; // v
+        std::vector<Vec3> normales; // vn
         std::vector<unsigned int> faces; // f
 
         // GPU

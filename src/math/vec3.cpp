@@ -1,6 +1,6 @@
 #include "../../include/config.hpp"
 
-Vec3::Vec3() {}
+Vec3::Vec3(): x(0.0f), y(0.0f), z(0.0f) {}
 
 Vec3::Vec3(float _x, float _y, float _z)
 {
@@ -11,17 +11,17 @@ Vec3::Vec3(float _x, float _y, float _z)
 
 Vec3::~Vec3() {}
 
-Vec3 Vec3::operator+(const Vec3 &other)
+Vec3 Vec3::operator+(const Vec3 &other) const
 {
     return (Vec3(x + other.x, y + other.y, z + other.z));
 }
 
-Vec3 Vec3::operator-(const Vec3 &other)
+Vec3 Vec3::operator-(const Vec3 &other) const
 {
     return (Vec3(x - other.x, y - other.y, z - other.z));
 }
 
-Vec3 Vec3::operator*(const Vec3 &other)
+Vec3 Vec3::operator*(const Vec3 &other) const
 {
     return (Vec3(x * other.x, y * other.y, z * other.z));
 }

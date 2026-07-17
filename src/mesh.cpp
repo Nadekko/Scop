@@ -46,9 +46,7 @@ void Mesh::loadMesh(const std::string &path)
         {
             float x, y, z;
             iss >> x >> y >> z;
-            vertices.push_back(x);
-            vertices.push_back(y);
-            vertices.push_back(z);
+            position.push_back(Vec3(x, y, z));
         }
         else if (type == "f")
         {
@@ -77,7 +75,7 @@ void Mesh::setupMesh()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, position.size() * sizeof(float), position.data(), GL_STATIC_DRAW);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, faces.size() * sizeof(unsigned int), faces.data(), GL_STATIC_DRAW);

@@ -14,7 +14,7 @@ Mat4::Mat4(const Mat4 &other)
     }
 }
 
-Mat4 Mat4::operator*(const Mat4 &other)
+Mat4 Mat4::operator*(const Mat4 &other) const
 {
     Mat4 mut;
     
@@ -165,7 +165,7 @@ Mat4 Mat4::perspective(float fov, float aspect, float near, float far)
 
     P.m[0] = f / aspect;
     P.m[5] = f;
-    P.m[10] = far / (near - far);
+    P.m[10] = (far + near) / (near - far);
     P.m[11] = -1.0f;
     P.m[14] = (2.0f * near * far) / (near - far);
 
