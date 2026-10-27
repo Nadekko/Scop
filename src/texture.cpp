@@ -34,6 +34,10 @@
 Texture::Texture(const char *path)
 {
     std::cout << "path for texture = " << path << std::endl;
+    // check .mtl
+    // std::string ext;
+    // std::string temp = path;
+    // size_t slash = temp.find_last_of(".");
     FILE *file = fopen(path, "rb");
     if (!file)
     {

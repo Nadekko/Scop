@@ -81,6 +81,11 @@ Shader::Shader (const GLchar* vertexPath, const GLchar* fragmentPath)
     glDeleteShader(fragment);
 }
 
+Shader::~Shader()
+{
+    glDeleteProgram(ID);
+}
+
 void Shader::use() const
 {
     glUseProgram(ID);
@@ -101,9 +106,9 @@ void Shader::setFloat(const std::string &name, float value) const
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-Shader::~Shader()
+void Shader::setVec3(const std::string &name, const Vec3 &value) const
 {
-    glDeleteProgram(ID);
+    glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
 }
 
 void Shader::checkCompileErrors(unsigned int shader, std::string type)

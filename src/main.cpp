@@ -93,6 +93,7 @@ int main(int ac, char **av)
                 Mat4 model = Mat4::rotation_y(angle);
 
                 ourShader.use();
+                ourShader.setVec3("objectColor", ourMesh.getColor());
                 
                 glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "model"),      1, GL_FALSE, model.m);
                 glUniformMatrix4fv(glGetUniformLocation(ourShader.ID, "view"),       1, GL_FALSE, view.m);
@@ -100,10 +101,9 @@ int main(int ac, char **av)
                 
                 ourShader.setInt("ourTexture", 0); // set the texture uniform to use texture unit 0
                 ourShader.setFloat("mixValue", mixValue); // set the mix value uniform to 0.5 for blending
-                
                 glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
                 ourTexture.bind();
-                ourMesh.draw();
+                ourMesh.draw(ourShader.ID);
                 
                 // check and call events and swap the buffers
                 glfwSwapBuffers(window);

@@ -9,6 +9,7 @@
 #include <cstring>
 #include <vector>
 #include <cmath>
+#include <map>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -18,3 +19,4 @@
 #include "mesh.hpp"
 #include "mat4.hpp"
 #include "vec3.hpp"
+#include "vec2.hpp"
