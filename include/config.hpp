@@ -10,6 +10,7 @@
 #include <vector>
 #include <cmath>
 #include <map>
+#include <stdexcept>
 
 #define WIDTH 800
 #define HEIGHT 600
