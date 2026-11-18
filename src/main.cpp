@@ -2,7 +2,6 @@
 
 // VAO = vertex array object
 // VBO = vertex buffer object
-// EBO = element buffer object
 
 // deltaTime = seconds elapsed since the previous frame.
 // Multiplying every movement by deltaTime makes it frame-rate independent:
@@ -140,7 +139,7 @@ int main(int ac, char **av)
             ourShader.setFloat("mixValue", mixValue); // set the mix value uniform to 0.5 for blending
             glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding the texture
             ourTexture.bind();
-            ourMesh.draw(ourShader.ID);
+            ourMesh.draw();
             
             // check and call events and swap the buffers
             glfwSwapBuffers(window);
@@ -154,38 +153,3 @@ int main(int ac, char **av)
     glfwTerminate();
     return (status);
 }
-
-
-        // // CHECK COORD's AND COLORS OF THE VERTICES
-        // float vertices[] = {
-        //     // position          // color           // UV
-        //     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // bottom left
-        //     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        //     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.5f, 1.0f// top center
-        // };
-
-        // unsigned int VBO, VAO;
-        
-        // glGenBuffers(1, &VBO);
-        // glGenVertexArrays(1, &VAO);
-
-        // // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        // glBindVertexArray(VAO);
-
-        // glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        // // [x][y][z] | [r][g][b] | [u][v]
-        // // location 0| location 1| location 2
-        // // offset 0  | offset 3  | offset 6
-        // // position attribute 
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        // glEnableVertexAttribArray(0);
-
-        // // color attribute
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-        // glEnableVertexAttribArray(1);
-
-        // // texture attribute
-        // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        // glEnableVertexAttribArray(2);

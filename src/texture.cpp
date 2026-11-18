@@ -117,9 +117,3 @@ void Texture::bind() const
 {
     glBindTexture(GL_TEXTURE_2D, ID);
 }
-
-// 0 means, "no more link between the texture and the OpenGL context"
-void Texture::unbind() const
-{
-    glBindTexture(GL_TEXTURE_2D, 0);
-}

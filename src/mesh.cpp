@@ -12,9 +12,9 @@ Mesh::~Mesh()
     glDeleteBuffers(1, &VBO);
 }
 
-void Mesh::draw(unsigned int ID) const
+void Mesh::draw() const
 {
-    (void) ID;
+
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()) / 8);
     glBindVertexArray(0);
@@ -64,19 +64,7 @@ void Mesh::loadMesh(const std::string &path)
         std::string type;
         iss >> type;
 
-        if (type == "mtllib")
-        {
-            std::string mtlFile;
-            iss >> mtlFile;
-
-            std::string dir;
-            size_t slash = path.find_last_of("/\\");
-            if (slash != std::string::npos)
-                dir = path.substr(0, slash + 1);
-            if (!mtlFile.empty())
-                loadMaterial(dir + mtlFile);
-        }
-        else if (type == "v") // vertex : position (x, y, z)
+        if (type == "v") // vertex : position (x, y, z)
         {
             float x, y, z;
             if (!(iss >> x >> y >> z))
@@ -101,86 +89,13 @@ void Mesh::loadMesh(const std::string &path)
                 triangleFace.push_back(faceCount);
             }
             faceCount++;
-        }
-        else if (type == "vn") // vertex texture
-        {
-            // TODO (bonus)
-        }
-        else if (type == "vt") // vertex normal
-        {
-            // TODO (bonus
+            // other keywords (vt, vn, mtllib, usemtl, o, g, s, #...) are ignored
         }
     }
     if (faces.empty())
         throw std::runtime_error("ERROR::MESH::NO_FACES: " + path);
     computeBound();
     buildVertices();
-}
-
-void    Mesh::loadMaterial(const std::string &mtlPath)
-{
-    
-    std::ifstream file(mtlPath);
-
-    if (!file.is_open())
-    {
-        std::cerr << "WARNING::MESH::MTL_NOT_FOUND\n" << mtlPath << std::endl;
-        diffuseColor.push_back(Vec3(1.0f, 1.0f, 1.0f)); // default color
-        return;
-    }
-
-    std::string line;
-
-    while(getline(file, line))
-    {
-        std::istringstream iss(line);
-        std::string type;
-
-        iss >> type;
-        if (type == "newmtl")
-        {
-            // newmtl Material
-        }
-        else if (type == "Ns")
-        {
-            // 
-        }
-        else if (type == "Ka")
-        {
-            //
-        }
-        else if (type == "Kd")
-        {
-            float r, g, b;
-            iss >> r >> g >> b;
-            diffuseColor.push_back(Vec3(r, g, b));
-            if (diffuseColor.empty())
-                diffuseColor.push_back(Vec3(1.0f, 1.0f, 1.0f));
-        }
-        else if (type == "Ks")
-        {
-            //
-        }
-        else if (type == "Ni")
-        {
-            //
-        }
-        else if (type == "d")
-        {
-            //
-        }
-        else if (type == "illum")
-        {
-            //
-        }
-    }
-}
-
-Vec3 Mesh::getColor() const
-{
-    if (!diffuseColor.empty())
-        return diffuseColor[0];
-    return Vec3(1.0f, 1.0f, 1.0f);
 }
 
 Vec3 Mesh::getCenter() const

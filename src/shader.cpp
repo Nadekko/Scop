@@ -11,7 +11,7 @@ static std::string readFile(const std::string &path)
     return buffer.str();
 }
 
-// Compile one shader stage (vertes or fragment)
+// Compile one shader stage (vertex or fragment)
 // On failure: frees the shader, then throws with the GLSL compiler message 
 static unsigned int compileShader(GLenum type, const std::string &source, const std::string & path)
 {
@@ -46,7 +46,7 @@ Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath)
     {
         fragment = compileShader(GL_FRAGMENT_SHADER, fragmentCode, fragmentPath);
     }
-    catch (...) // any execption
+    catch (...) // execption
     {
         glDeleteShader(vertex); // vertex already exist on GPU
         throw; // intercepted by main
@@ -82,11 +82,6 @@ void Shader::use() const
     glUseProgram(ID);
 }
 
-void Shader::setBool(const std::string &name, bool value) const
-{
-    glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
-}
-
 void Shader::setInt(const std::string &name, int value) const
 {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
@@ -95,9 +90,4 @@ void Shader::setInt(const std::string &name, int value) const
 void Shader::setFloat(const std::string &name, float value) const
 {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
-}
-
-void Shader::setVec3(const std::string &name, const Vec3 &value) const
-{
-    glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
 }
